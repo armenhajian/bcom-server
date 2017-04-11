@@ -5,13 +5,13 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/members');
+mongoose.connect('mongodb://localhost:27017/bcom');
 mongoose.Promise = global.Promise;
 
 const Authorize = require('./services/Auth');
 
 const index = require('./routes/index');
-const auth = require('./routes/auth');
+const auth  = require('./routes/auth');
 const users = require('./routes/users');
 const posts = require('./routes/posts');
 const admin = require('./routes/admin');

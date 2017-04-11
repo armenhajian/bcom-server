@@ -5,12 +5,20 @@ const Post = require('../models/Post');
 const PostService = require('../services/Post');
 
 // GET users listing. */
-router.get('/', async(req, res, next) => {
-  const posts = await Post.find({status: 'accepted'});
-  res.send(JSON.stringify({
-    posts: posts
-  }));
+router.get('/', (req, res, next) => {
+  Post.find({status: 'accepted'})
+    .lean()
+    .then(posts => {
+    posts = posts.map(post=>{
+      post.votes = post.votes.length;
+      return post;
+    });
+    res.send(JSON.stringify({
+      posts: posts
+    }));
+  }).catch(err => res.status(400).send(err));
 });
+
 router.post('/', (req, res, next) => {
   const data = req.body;
   const post = new Post({
@@ -24,5 +32,11 @@ router.post('/', (req, res, next) => {
   }).catch(err => res.status(400).send(err));
 });
 
+router.post('/:postId/vote', (req, res, next) => {
+  PostService.vote(req.params.postId, req._currentUser._id)
+    .then(() => {
+      res.sendStatus(200);
+    }).catch(err => res.status(400).send(err));
+});
 
 module.exports = router;

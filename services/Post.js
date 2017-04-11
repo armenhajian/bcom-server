@@ -3,26 +3,28 @@ const config = require('../config');
 const jwt = require('jsonwebtoken');
 const transporter = nodemailer.createTransport(config.mailer);
 const User = require('../models/User');
+const Post = require('../models/Post');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+const Q = require('q');
 
 const newPostRequestToAdmin = post => {
-  console.log(post);
-  User.findOne({_id:post.owner}).then(user=>{
+  User.findOne({_id: post.owner}).then(user => {
     const senderName = user.email;
     const token = jwt.sign(new Date(), config.secret);
-    let text=`User: ${senderName}<br>
+    let text = `User: ${senderName}<br>
               <br>${post.body}<br>
               <a target="_blank" href="${config.host}/admin/${post._id}/accept?token=${token}">Accept</a>
               <a target="_blank" href="${config.host}/admin/${post._id}/decline?token=${token}">Decline</a>`;
-    User.findOne({role: 'admin'}).then(admin=>{
+    User.findOne({role: 'admin'}).then(admin => {
       let mailOptions = {
-        from: `<${senderName}>`,//"" <foo@blurdybloop.com>', // sender address
+        from: `<${senderName}>`,
         to: `${admin.email}`, // list of receivers
         subject: `New Post From: <${senderName}> ✔ ${post.title}`, // Subject line
         // text: text, // plain text body
         html: text // html body
       };
-
-// send mail with defined transport object
+      console.log('send mail with this options:', JSON.stringify(mailOptions));
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           return console.log(error);
@@ -30,9 +32,32 @@ const newPostRequestToAdmin = post => {
         console.log('Message %s sent: %s', info.messageId, info.response);
       });
     });
-  });
+  }).catch(err => console.log(err));
 };
 
+function vote(postId, userId) {
+  const d = Q.defer();
+  if(!postId || !userId) {
+    d.reject(new Error('postId and user are mandatory'));
+  }
+  Post.findOne({_id: postId})
+    .then(post => {
+      debugger;
+      userId = ObjectId(userId);
+      const index = post.votes.indexOf(userId);
+      if (index === -1) {
+        post.votes.push(userId);
+      } else {
+        post.votes.splice(index, 1);
+      }
+      post.save();
+
+      d.resolve();
+    }).catch(err => d.reject(err));
+
+  return d.promise;
+}
 module.exports = {
   newPostRequestToAdmin: newPostRequestToAdmin,
+  vote: vote
 };
