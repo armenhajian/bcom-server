@@ -2,7 +2,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 const router = express.Router();
 const User = require('../models/User');
 
@@ -30,7 +30,7 @@ function authenticate(req, res) {
 function register(req, res) {
   const userParam = _.omit(req.body, 'password');
   console.log(userParam, req.body);
-  userParam.hash = bcrypt.hashSync(req.body.password, 10);
+  userParam.hash = bcrypt.hashSync(req.body.password);
 
   const user = new User(userParam);
   user.save().then(function () {
