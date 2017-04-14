@@ -34,7 +34,7 @@ function register(req, res) {
 
   const user = new User(userParam);
   user.save().then(function () {
-      res.sendStatus(200);
+      res.send({message: 'Success'});
     })
     .catch(function (err) {
       res.status(400).send(err);
