@@ -28,7 +28,7 @@ router.post('/', (req, res, next) => {
   });
   post.save().then(() => {
     PostService.newPostRequestToAdmin(post);
-    res.sendStatus(200);
+    res.send({message: 'Success'});
   }).catch(err => res.status(400).send(err));
 });
 
