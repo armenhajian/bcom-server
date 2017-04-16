@@ -35,8 +35,8 @@ router.post('/', (req, res, next) => {
 router.post('/:postId/vote', (req, res, next) => {
   PostService.vote(req.params.postId, req._currentUser._id)
     .then(() => {
-      res.sendStatus(200);
-    }).catch(err => res.status(400).send(err));
+      res.send({message: 'Vote: Success'});
+    }).catch(err => res.status(400).send({error: "BAAAD"}));
 });
 
 module.exports = router;
