@@ -3,9 +3,9 @@
   "mailer": {
     "service": "gmail",
     "auth": {
-      "user": "armenhajian@gmail.com",
-      "pass": "*********"
+      "user": "bcommapp@gmail.com ",
+      "pass": "bcom2017"
     }
   },
-  "host":"http://localhost:3000"
+  "host":"bcon.eu-2.evennode.com"
 }

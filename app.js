@@ -9,8 +9,7 @@ const serverConfig = JSON.parse(process.env.APP_CONFIG);
 const mongoPassword = '123456';
 const mongoURL = serverConfig ? "mongodb://" + serverConfig.mongo.user + ":" + mongoPassword + "@" +
   serverConfig.mongo.hostString : 'mongodb://localhost:27017/bcom';
-console.log(serverConfig);
-console.log(mongoURL);
+
 mongoose.connect(mongoURL);
 mongoose.Promise = global.Promise;
 
