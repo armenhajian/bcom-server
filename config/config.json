@@ -3,7 +3,7 @@
   "mailer": {
     "service": "gmail",
     "auth": {
-      "user": "bcommapp@gmail.com ",
+      "user": "bcommapp@gmail.com",
       "pass": "bcom2017"
     }
   },
